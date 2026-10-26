@@ -126,3 +126,17 @@ No test pass, full search run, hardware comparison, training run, or release art
 - Hardware-specific claims require cited source material or documented measurements.
 
 The project is provided for research and development. Validate all results independently before using them to make engineering, purchasing, or sound-quality decisions.
+
+## Evidence-first logging implementation
+
+This branch now includes `vintage_harness.py`, a local evidence module for canonical configuration hashes, recursive secret redaction, UTC JSONL events, provenance manifests, strict reference metadata checks, finite component-metric validation, holdout-leakage rejection, and guarded composite-error calculation. The reusable agent skill is at [`.github/skills/vintage-compressor-evidence/SKILL.md`](.github/skills/vintage-compressor-evidence/SKILL.md).
+
+Run focused tests with:
+
+```bash
+pytest -q test_vintage_harness.py
+```
+
+These tests use synthetic fixtures to verify evidence plumbing only. They do not capture audio, train weights, launch an accelerator, validate a vintage unit, or establish measured compressor curves. The composite-error helper expects already-normalized component errors; it is not a validated perceptual metric.
+
+The paired skill-effectiveness protocol is documented in [`docs/SKILL_EVIDENCE_PROTOCOL.md`](docs/SKILL_EVIDENCE_PROTOCOL.md). It compares identical tasks with and without the skill, using predeclared verifiers, blinded review where needed, and published artifacts. No skill A/B benchmark has been run yet.
