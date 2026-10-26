@@ -1,0 +1,117 @@
+{
+  "project": {
+    "name": "Vintage Comprehensive Logging Harness",
+    "slug": "vintage-comprehensive-logging-harness",
+    "version": "0.1.0",
+    "purpose": "Reproducible, source-traceable evaluation of vintage compressor behavior against independent hardware references",
+    "reference_policy": "hardware_manuals_and_measured_hardware_are_ground_truth",
+    "status": "research_defaults_not_hardware_validated"
+  },
+  "execution": {
+    "mode": "dry_run",
+    "allow_accelerator_launch": false,
+    "require_plan_before_launch": true,
+    "require_explicit_cost_ceiling_usd": true,
+    "max_cost_usd": 0.0,
+    "max_nodes": 1,
+    "max_combinations": 1000,
+    "max_results": 100,
+    "timeout_seconds": 300,
+    "fail_on_non_finite_metrics": true,
+    "fail_on_missing_reference_metadata": true,
+    "random_seed": 20261026
+  },
+  "logging": {
+    "level": "INFO",
+    "format": "jsonl",
+    "timestamp_timezone": "UTC",
+    "write_console": true,
+    "write_run_log": true,
+    "write_candidate_metrics": true,
+    "write_errors": true,
+    "redact_credentials": true,
+    "record_environment": true,
+    "record_git_commit": true,
+    "record_config_sha256": true,
+    "record_input_sha256": true,
+    "record_reference_sha256": true,
+    "never_log_secrets": true
+  },
+  "reference": {
+    "require_model": true,
+    "require_revision_or_serial": true,
+    "require_manual_or_source_url": true,
+    "require_page_figure_or_table": true,
+    "require_measurement_conditions": true,
+    "require_raw_capture": true,
+    "require_calibration_notes": true,
+    "require_uncertainty_or_repeatability": true,
+    "blind_listening_tests": true,
+    "level_matched_listening_tests": true,
+    "holdout_split_required": true
+  },
+  "audio_measurements": {
+    "sample_rate_hz": 48000,
+    "channels": 2,
+    "sample_format": "float32",
+    "analysis_alignment": "preserve_original_and_aligned_copy",
+    "level_match_tolerance_db": 0.1,
+    "metrics": [
+      "static_transfer_curve_error_db",
+      "gain_reduction_trajectory_error_db",
+      "attack_time_error_ms",
+      "release_recovery_error_ms",
+      "frequency_response_error_db",
+      "harmonic_levels_db",
+      "thd_percent",
+      "intermodulation_error_db",
+      "transient_residual_rms_dbfs",
+      "noise_floor_dbfs",
+      "stereo_link_error_db"
+    ],
+    "harmonics": {
+      "minimum_harmonic": 2,
+      "maximum_harmonic": 10,
+      "units": "dBc",
+      "require_fundamental_frequency_hz": true,
+      "require_fundamental_level_dbfs": true,
+      "require_analyzer_bandwidth_hz": true
+    }
+  },
+  "scoring": {
+    "objective": "vintage_reference_composite_v1",
+    "direction": "lower_error_is_better",
+    "weights": {
+      "transfer_curve": 0.2,
+      "envelope": 0.2,
+      "frequency_response": 0.15,
+      "harmonics": 0.15,
+      "intermodulation": 0.1,
+      "transients": 0.1,
+      "stereo_behavior": 0.1
+    },
+    "report_component_metrics": true,
+    "report_composite_only_if_all_required_components_present": true,
+    "calibration_data_must_not_overlap_holdout": true
+  },
+  "outputs": {
+    "directory": "artifacts/vintage-comprehensive-logging-harness",
+    "run_manifest": "run_manifest.json",
+    "summary": "summary.json",
+    "candidate_results": "candidate_results.jsonl",
+    "logs": "run.log.jsonl",
+    "measurements": "measurements.jsonl",
+    "failures": "failures.jsonl",
+    "write_raw_audio": false,
+    "raw_audio_directory": "raw_audio",
+    "preserve_raw_audio_when_explicitly_enabled": true
+  },
+  "privacy_and_network": {
+    "telemetry": false,
+    "automatic_upload": false,
+    "automatic_updates": false,
+    "remote_config": false,
+    "network_access_for_local_analysis": false,
+    "external_provider_launch_requires_explicit_opt_in": true
+  }
+}
